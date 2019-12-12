@@ -1,2 +1,4 @@
 
 mysite/__pycache__/
+db/__pycache__/
+db/migrations/__pycache__/

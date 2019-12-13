@@ -10,7 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+# import logging
+
 import os
+
+import environ
+
+# logger = logging.getLogger(__name__)
+
+root = environ.Path(__file__) - 2  # get root of the project
+environ.Env.read_env( env_file=root('.env'))  # reading .env file
+env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +33,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!*-&kj8hd(&v))2-4w-o@m14m(s2kyz7wb7cglcpn#c$@q#pmw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('APP_DEBUG', default=False)
 
 ALLOWED_HOSTS = []
 
@@ -76,8 +86,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.' + env.str('DB_CONNECTION', default='mysql'),
+        'NAME': env.str('DB_DATABASE', default='db'),
+        'USER': env.str('DB_USERNAME', default='homestad'),
+        'PASSWORD': env.str('DB_PASSWORD', default='secret'),
+        'HOST': env.str('DB_HOST', default='localhost'),
+        'PORT': env.str('DB_PORT', default='3306')
     }
 }
 
